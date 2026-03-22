@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_state_provider.dart';
+import '../providers/auth_provider.dart';
 import 'package:intl/intl.dart';
 import 'ai_feedback_screen.dart';
 
@@ -10,10 +11,19 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final history = context.watch<AppStateProvider>().interviewHistory;
+    final user = context.watch<AuthProvider>().currentUser;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () {
+              context.read<AuthProvider>().logout();
+            },
+          )
+        ],
       ),
       body: ListView(
         padding: const EdgeInsets.all(24.0),
@@ -24,18 +34,18 @@ class ProfileScreen extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            'John Doe',
+            user?.name ?? 'Guest User',
             style: Theme.of(context).textTheme.headlineMedium,
             textAlign: TextAlign.center,
           ),
           Text(
-            'john.doe@example.com',
+            user?.email ?? 'No email provided',
             style: Theme.of(context).textTheme.bodyMedium,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 32),
           Text(
-            'Interview History',
+            'Interview History (Session)',
             style: Theme.of(context).textTheme.titleLarge,
           ),
           const SizedBox(height: 16),
